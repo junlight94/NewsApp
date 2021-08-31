@@ -72,6 +72,48 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // 클릭
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("\(indexPath.row)")
+        
+        let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+        let controller = storyboard.instantiateViewController(identifier: "NewsDetailController") as! NewsDetailController
+        
+        if let news = newsData{
+            let row = news[indexPath.row]
+            if let r = row as? Dictionary<String, Any>{
+                
+                if let imageUrl = r["urlToImage"] as? String{
+                    controller.imageUrl = imageUrl
+                }
+                if let desc = r["description"] as? String{
+                    controller.desc = desc
+                }
+            }
+        }
+        //이동 - 수동
+//        showDetailViewController(controller, sender: nil)
+    }
+
+    
+    // 세그웨이
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let id = segue.identifier, "NewDetail" == id {
+            if let controller = segue.destination as? NewsDetailController {
+                
+                if let news = newsData{
+                    if let indexPath = TableViewMain.indexPathForSelectedRow {
+                    let row = news[indexPath.row]
+                    if let r = row as? Dictionary<String, Any>{
+                        
+                        if let imageUrl = r["urlToImage"] as? String{
+                            controller.imageUrl = imageUrl
+                        }
+                        if let desc = r["description"] as? String{
+                            controller.desc = desc
+                        }
+                    }
+                    }
+                }
+            }
+        }
     }
     
     override func viewDidLoad() {
